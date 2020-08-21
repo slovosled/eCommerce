@@ -35,6 +35,8 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<User> findByUserName(@PathVariable String username) {
         User user = userRepository.findByUsername(username);
+        if (user == null)
+            log.error("Error: User {} does not exists", username);
         return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
     }
 
@@ -42,16 +44,31 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
         User user = new User();
         user.setUsername(createUserRequest.getUsername());
+
+        if (createUserRequest.getPassword() == null) {
+            log.error("Error: User creation failed | Password for new user not provided");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (createUserRequest.getConfirmPassword() == null) {
+            log.error("Error: User creation failed | Password confirmation for new user not provided");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (createUserRequest.getPassword().length() < 7 || !createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())) {
+            log.error("Error: User creation failed | Cannot create user {} due to password length or password confirmation", createUserRequest.getUsername());
+            return ResponseEntity.badRequest().build();
+        }
+
         Cart cart = new Cart();
         cartRepository.save(cart);
         user.setCart(cart);
-
-        if (createUserRequest.getPassword().length() < 7 || !createUserRequest.getPassword().equals(createUserRequest.getPassword())) {
-            log.error("Error with user password. Cannot create user {}", createUserRequest.getUsername());
-            return ResponseEntity.badRequest().build();
-        }
         user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
         userRepository.save(user);
+
+        log.info("Success: User with id: {} and name: {} successfully created",
+                user.getId(),
+                user.getUsername());
         return ResponseEntity.ok(user);
     }
 

@@ -11,3 +11,6 @@ target/
 **/*.iml
 **/.idea
 **/.gradle
+
+#Log files
+log.out
