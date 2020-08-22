@@ -33,7 +33,7 @@ public class ItemController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<List<Item>> getItemsByName(@PathVariable String name) {
+        public ResponseEntity<List<Item>> getItemsByName(@PathVariable String name) {
         List<Item> items = itemRepository.findByName(name);
         if (items == null) {
             log.error("Error: Items with search: {} does not exist", name);

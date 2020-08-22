@@ -24,7 +24,7 @@ public class User {
 	@JsonIgnore
 	private Cart cart;
 
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@JsonProperty
 	@Column(nullable = false)
 	private String password;
 
