@@ -4,6 +4,7 @@ package com.example.demo.security;
 import com.example.demo.model.persistence.Item;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.requests.CreateUserRequest;
+import com.example.demo.model.requests.UserRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class JWTAuthenticationTest {
         userRequest.setConfirmPassword("abeceda");
         ResponseEntity<User> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/user/create", userRequest, User.class);
 
-        User user = new User();
+        UserRequest user = new UserRequest();
         user.setUsername("AnotherUser");
         user.setPassword("abeceda");
 
